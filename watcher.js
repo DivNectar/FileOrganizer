@@ -5,6 +5,8 @@ let watchFolder = path.join(__dirname, "files");
 let fsTimeout;
 
 fs.watch(watchFolder, (eventType, filename) => {
+  console.log(eventType);
+
   let currentDay = new Date();
 
   let month = currentDay.getMonth().toString();
@@ -16,26 +18,25 @@ fs.watch(watchFolder, (eventType, filename) => {
   if (!fsTimeout) {
     fsTimeout = setTimeout(function () {
       fsTimeout = null;
-    }, 5000); // give 5 seconds for multiple events
+    }, 6000); // give 5 seconds for multiple events
     if (filename) {
       setTimeout(function () {
-        console.log(filename);
         let fileName = path.basename(filename);
         if (fs.existsSync(todaysFolderPath)) {
-          console.log("folder already exists");
           fs.renameSync(
             path.join(watchFolder, filename),
             path.join(todaysFolderPath, fileName)
           );
+          console.log(`Moved ${filename} to ${todaysFolderPath}`)
         } else {
-          console.log("folder does not exist yet");
           fs.mkdirSync(todaysFolderPath, { recursive: true });
           fs.renameSync(
             path.join(watchFolder, filename),
             path.join(todaysFolderPath, fileName)
           );
+          console.log(`Moved ${filename} to ${todaysFolderPath}`)
         }
-      }, 3000);
+      }, 6000);
     }
   }
 });
